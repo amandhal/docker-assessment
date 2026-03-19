@@ -26,6 +26,18 @@ docker volumes prune -a
 6. Scan Images for Vulnerabilities
 7. Use Read-Only Filesystem
 
+### .dockerignore
+```
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.git
+.gitignore
+README.md
+```
+
 ### Dockerfile
 ```dockerfile
 # -------- STAGE 1: Builder --------
@@ -68,15 +80,23 @@ EXPOSE 5000
 CMD ["python", "app.py"]
 ```
 
-### .dockerignore
+#### Build & Push image to Docker Hub
+```bash
+docker build -t amandhal/flask-lms:1.0.0 -t amandhal/flask-lms:latest .
+docker push amandhal/flask-lms --all-tags
 ```
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.env
-.git
-.gitignore
-README.md
-```
+<img width="915" height="688" alt="image" src="https://github.com/user-attachments/assets/deabffc3-60fb-46b9-b5b0-86db859cd13e" />
 
+#### Image Scanning using Trivy
+```bash
+trivy image amandhal/flask-lms:1.0.0
+```
+<img width="1568" height="910" alt="image" src="https://github.com/user-attachments/assets/1c01140f-748d-4f37-8996-2552596d0247" />
+
+#### Configure container with resource limits & read-only filesystem
+```bash
+docker run -d --name test-limit-ro --memory="128m" --cpus="0.5" --read-only busybox sleep infinity
+docker inspect test-limit-ro | grep -i cpu
+docker inspect test-limit-ro | grep -i memory
+```
+<img width="1918" height="589" alt="image" src="https://github.com/user-attachments/assets/59d1fc63-0b65-4ceb-b02b-4d614aa3754f" />
